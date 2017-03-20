@@ -12,7 +12,7 @@ var FIND_LEAD_SPACE_RX = /^\u0020/,
     //find space more than one
     FIND_SPACE_MORE_THAN_ONE_RX = /[\u0020]+/g,
     //find characters that need escape
-    FIND_CHAR_TO_ESCAPE_RX = /[~>()*{}\[\]_`+-.!#|]/g;
+    FIND_CHAR_TO_ESCAPE_RX = /[~<>()*{}\[\]_`+-.!#|]/g;
 
 var TEXT_NODE = 3;
 
@@ -326,7 +326,8 @@ Renderer.markdownTextToEscapeRx = {
 
     verticalBar: /\u007C/,
 
-    codeblockGfm: /^(`{3,})/
+    codeblockGfm: /^(`{3,})/,
+    ltgt: /[<>]/
 };
 
 Renderer.prototype._isNeedEscape = function(text) {

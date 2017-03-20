@@ -192,6 +192,8 @@ describe('renderer', function() {
         expect(renderer.escapeText('> im text')).toEqual('\\> im text');
         expect(renderer.escapeText('im | text')).toEqual('im \\| text');
         expect(renderer.escapeText('im ` text')).toEqual('im \\` text');
+        expect(renderer.escapeText('im < text')).toEqual('im \\< text');
+        expect(renderer.escapeText('im > text')).toEqual('im \\> text');
     });
 
     describe('_isNeedEscape() can check passed text is needed escape or not', function() {
@@ -270,6 +272,11 @@ describe('renderer', function() {
         it('link,img', function() {
             expect(renderer._isNeedEscape('[abaewf](afewf)')).toEqual(true);
             expect(renderer._isNeedEscape('![abaewf](afewf)')).toEqual(true);
+        });
+
+        it('lt gt', function() {
+            expect(renderer._isNeedEscape('asdf>asdf')).toEqual(true);
+            expect(renderer._isNeedEscape('sadf<asdf')).toEqual(true);
         });
 
         it('should not escaped', function() {

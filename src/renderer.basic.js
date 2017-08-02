@@ -94,10 +94,17 @@ var basicRenderer = Renderer.factory({
         return '  \n';
     },
     'CODE': function(node, subContent) {
+        var backticks, numBackticks;
         var res = '';
 
         if (!this.isEmptyText(subContent)) {
-            res = '`' + subContent + '`';
+            numBackticks = node.getAttribute('data-backticks');
+            numBackticks = parseInt(numBackticks, 10);
+            numBackticks = isNaN(numBackticks) ? 1 : numBackticks;
+
+            backticks = Array(numBackticks + 1).join('`');
+
+            res = backticks + subContent + backticks;
         }
 
         return res;

@@ -98,11 +98,8 @@ var basicRenderer = Renderer.factory({
         var res = '';
 
         if (!this.isEmptyText(subContent)) {
-            numBackticks = node.getAttribute('data-backticks');
-            numBackticks = parseInt(numBackticks, 10);
-            numBackticks = isNaN(numBackticks) ? 1 : numBackticks;
-
-            backticks = Array(numBackticks + 1).join('`');
+            numBackticks = parseInt(node.getAttribute('data-backticks'), 10);
+            backticks = isNaN(numBackticks) ? '`' : Array(numBackticks + 1).join('`');
 
             res = backticks + subContent + backticks;
         }

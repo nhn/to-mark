@@ -1,9 +1,12 @@
 {
-  "name": "toMark",
-  "version": "0.0.19",
-  "author": "Sungho Kim / FE Development Team / NHN Entertainment.",
+  "name": "to-mark",
+  "version": "1.0.0",
+  "author": "NHN Ent. FE Development Lab <dl_javascript@nhnent.com> (https://github.com/to-mark)",
   "license": "MIT",
-  "main": "dist/toMark.js",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/to-mark.js",
   "devDependencies": {
     "cross-env": "^5.0.5",
     "gulp": "^3.9.0",
@@ -36,7 +39,7 @@
     "karma-sourcemap-loader": "^0.3.6",
     "karma-webdriver-launcher": "https://github.com/nhnent/karma-webdriver-launcher.git#v1.1.0",
     "karma-webpack": "^1.7.0",
-    "webpack": "^1.12.10",
+    "webpack": "^3.10.0",
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {

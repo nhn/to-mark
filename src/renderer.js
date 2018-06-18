@@ -305,11 +305,9 @@ Renderer.prototype.getSpaceCollapsedText = function(text) {
  * @returns {string} processed text
  */
 Renderer.prototype.escapeText = function(text) {
-    text = text.replace(FIND_CHAR_TO_ESCAPE_RX, function(matched) {
+    return text.replace(FIND_CHAR_TO_ESCAPE_RX, function(matched) {
         return '\\' + matched;
     });
-
-    return text;
 };
 
 /**
@@ -318,11 +316,9 @@ Renderer.prototype.escapeText = function(text) {
  * @returns {string} - processed text
  */
 Renderer.prototype.escapeTextForLink = function(text) {
-    text = text.replace(FIND_CHAR_TO_ESCAPE_IN_LINK_RX, function(matched) {
+    return text.replace(FIND_CHAR_TO_ESCAPE_IN_LINK_RX, function(matched) {
         return '\\' + matched;
     });
-
-    return text;
 };
 
 /**

@@ -150,18 +150,9 @@ var basicRenderer = Renderer.factory({
         return '\n\n' + res + '\n\n';
     },
     'LI H1, LI H2, LI H3, LI H4, LI H5, LI H6': function(node, subContent) {
-        var res = '',
-            headingNumber = parseInt(node.tagName.charAt(1), 10);
+        var headingNumber = parseInt(node.tagName.charAt(1), 10);
 
-        while (headingNumber) {
-            res += '#';
-            headingNumber -= 1;
-        }
-
-        res += ' ';
-        res += subContent;
-
-        return res;
+        return Array(headingNumber + 1).join('#') + ' ' + subContent;
     },
 
     //List

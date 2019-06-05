@@ -26,6 +26,9 @@ var basicRenderer = Renderer.factory({
 
         managedText = this.trim(this.getSpaceCollapsedText(node.nodeValue));
 
+        if (this._isNeedEscapeBackSlash(managedText)) {
+            managedText = this.escapeTextBackSlash(managedText);
+        }
         if (this._isNeedEscapeHtml(managedText)) {
             managedText = this.escapeTextHtml(managedText);
         }
@@ -187,8 +190,8 @@ var basicRenderer = Renderer.factory({
         return res;
     },
     'OL LI': function(node, subContent) {
-        var res = '',
-            liCounter = 1;
+        var res = '';
+        var liCounter = parseInt(node.parentNode.getAttribute('start') || 1, 10);
 
         while (node.previousSibling) {
             node = node.previousSibling;

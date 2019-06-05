@@ -106,6 +106,9 @@ var basicRenderer = Renderer.factory({
 
         managedText = this.trim(this.getSpaceCollapsedText(node.nodeValue));
 
+        if (this._isNeedEscapeBackSlash(managedText)) {
+            managedText = this.escapeTextBackSlash(managedText);
+        }
         if (this._isNeedEscapeHtml(managedText)) {
             managedText = this.escapeTextHtml(managedText);
         }
@@ -267,8 +270,8 @@ var basicRenderer = Renderer.factory({
         return res;
     },
     'OL LI': function(node, subContent) {
-        var res = '',
-            liCounter = 1;
+        var res = '';
+        var liCounter = parseInt(node.parentNode.getAttribute('start') || 1, 10);
 
         while (node.previousSibling) {
             node = node.previousSibling;
@@ -664,6 +667,22 @@ Renderer.prototype.escapeTextHtml = function(text) {
     return text;
 };
 
+/**
+ * Backslash is using for escape ASCII punctuation character.
+ * https://spec.commonmark.org/0.29/#backslash-escapes
+ * If user input backslash as text, backslash is kept by inserting backslash.
+ * For example, if input text is "\$", this text is changed "\\$"
+ * @param {string} text text be processed
+ * @returns {string} processed text
+ */
+Renderer.prototype.escapeTextBackSlash = function(text) {
+    text = text.replace(Renderer.markdownTextToEscapeBackSlashRx, function(matched) {
+        return '\\' + matched;
+    });
+
+    return text;
+};
+
 Renderer.markdownTextToEscapeRx = {
     codeblock: /(^ {4}[^\n]+\n*)+/,
     hr: /^ *((\* *){3,}|(- *){3,} *|(_ *){3,}) */,
@@ -688,6 +707,8 @@ Renderer.markdownTextToEscapeRx = {
 
 Renderer.markdownTextToEscapeHtmlRx = /<([a-zA-Z_][a-zA-Z0-9\-\._]*)(\s|[^\\/>])*\/?>|<(\/)([a-zA-Z_][a-zA-Z0-9\-\._]*)\s*\/?>|<!--[^-]+-->|<([a-zA-Z_][a-zA-Z0-9\-\.:/]*)>/g;
 
+Renderer.markdownTextToEscapeBackSlashRx = /\\[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\]/g;
+
 Renderer.prototype._isNeedEscape = function(text) {
     var res = false;
     var markdownTextToEscapeRx = Renderer.markdownTextToEscapeRx;
@@ -705,6 +726,10 @@ Renderer.prototype._isNeedEscape = function(text) {
 
 Renderer.prototype._isNeedEscapeHtml = function(text) {
     return Renderer.markdownTextToEscapeHtmlRx.test(text);
+};
+
+Renderer.prototype._isNeedEscapeBackSlash = function(text) {
+    return Renderer.markdownTextToEscapeBackSlashRx.test(text);
 };
 
 /**

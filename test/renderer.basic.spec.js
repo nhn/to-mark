@@ -83,6 +83,11 @@ describe('basicRenderer', function() {
             expect(getMarkdownText('<i></i>', '\n')).toEqual('');
         });
 
+        it('whitespace characters before and after the subcontent of em or i are changed out of the syntax.', function() {
+            expect(getMarkdownText('<em></em>', '  foo ')).toEqual('  *foo* ');
+            expect(getMarkdownText('<i></i>', '  foo ')).toEqual('  *foo* ');
+        });
+
         it('link', function() {
             expect(getMarkdownText('<a href="http://www.nhnent.com"></a>', 'NHNENT')).toEqual('[NHNENT](http://www.nhnent.com)');
             expect(getMarkdownText('<a href="#head"></a>', 'NHNENT')).toEqual('[NHNENT](#head)');
@@ -127,6 +132,11 @@ describe('basicRenderer', function() {
             expect(getMarkdownText('<strong></strong>', '\n')).toEqual('');
             expect(getMarkdownText('<b></b>', '')).toEqual('');
             expect(getMarkdownText('<b></b>', '\n')).toEqual('');
+        });
+
+        it('whitespace characters before and after the sub content of strong or b are changed out of the syntax.', function() {
+            expect(getMarkdownText('<strong></strong>', '  foo ')).toEqual('  **foo** ');
+            expect(getMarkdownText('<b></b>', '  foo ')).toEqual('  **foo** ');
         });
 
         it('code', function() {

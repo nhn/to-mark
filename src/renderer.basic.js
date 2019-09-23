@@ -47,6 +47,9 @@ var basicRenderer = Renderer.factory({
 
         if (!this.isEmptyText(subContent)) {
             res = '*' + subContent + '*';
+            res = res.replace(/\*(\s+)/g, '$1\\*');
+            res = res.replace(/(\s+)\*/g, '\\*$1');
+            res = res.replace(/\\\*/g, '*');
         }
 
         return res;
@@ -56,6 +59,9 @@ var basicRenderer = Renderer.factory({
 
         if (!this.isEmptyText(subContent)) {
             res = '**' + subContent + '**';
+            res = res.replace(/\*\*(\s+)/g, '$1\\*\\*');
+            res = res.replace(/(\s+)\*\*/g, '\\*\\*$1');
+            res = res.replace(/\\\*\\\*/g, '**');
         }
 
         return res;

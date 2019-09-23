@@ -34,7 +34,7 @@ describe('toMark', function() {
         expect(toMark('<h2><em>Hello </em> World</h2>')).toEqual('## *Hello* World');
         expect(toMark('<h2><em>Hello </em>World</h2>')).toEqual('## *Hello* World');
         expect(toMark('<h2><em>Hello</em>  &nbsp;&nbsp;World</h2>')).toEqual('## *Hello* \u00a0\u00a0World');
-        expect(toMark('<h2><em>Hello&nbsp;</em>  &nbsp;&nbsp;World</h2>')).toEqual('## *Hello\u00a0* \u00a0\u00a0World');
+        expect(toMark('<h2><em>Hello&nbsp;</em>  &nbsp;&nbsp;World</h2>')).toEqual('## *Hello*\u00a0 \u00a0\u00a0World');
     });
 
     it('p and inlines', function() {

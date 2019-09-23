@@ -19,7 +19,16 @@ var Renderer = require('./renderer'),
  */
 var gfmRenderer = Renderer.factory(basicRenderer, {
     'DEL, S': function(node, subContent) {
-        return '~~' + subContent + '~~';
+        var res = '';
+
+        if (!this.isEmptyText(subContent)) {
+            res = '~~' + subContent + '~~';
+            res = res.replace(/~~(\s+)/g, '$1\\~\\~');
+            res = res.replace(/(\s+)~~/g, '\\~\\~$1');
+            res = res.replace(/\\~\\~/g, '~~');
+        }
+
+        return res;
     },
     'PRE CODE': function(node, subContent) {
         var backticks;

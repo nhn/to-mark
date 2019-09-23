@@ -24,6 +24,11 @@ describe('gfmRenderer', function() {
             expect(getMarkdownText('<p><del>text</del></p>', 'text', 2)).toEqual('~~text~~');
             expect(getMarkdownText('<p><s>text</s></p>', 'text', 2)).toEqual('~~text~~');
         });
+
+        it('whitespace characters before and after the sub content are changed out of the syntax.', function() {
+            expect(getMarkdownText('<del></del>', '  foo ')).toEqual('  ~~foo~~ ');
+            expect(getMarkdownText('<s></s>', '  foo ')).toEqual('  ~~foo~~ ');
+        });
     });
 
     describe('pre code', function() {

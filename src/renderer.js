@@ -334,7 +334,7 @@ Renderer.prototype.escapeTextForLink = function(text) {
     var imageSyntaxRanges = [];
     var result = FIND_MARKDOWN_IMAGE_SYNTAX_RX.exec(text);
 
-    while (result !== null) {
+    while (result) {
         imageSyntaxRanges.push([result.index, result.index + result[0].length]);
         result = FIND_MARKDOWN_IMAGE_SYNTAX_RX.exec(text);
     }

@@ -35,16 +35,16 @@ describe('toMark', function() {
 
     it('should not escape image syntax inside link syntax', function() {
         expect(toMark(
-          '<a href="url"><img src="src" alt="alt" /></a>')).toEqual(
-          '[![alt](src)](url)'
+            '<a href="url"><img src="src" alt="alt" /></a>')).toEqual(
+            '[![alt](src)](url)'
         );
         expect(toMark(
-          '<a href="url"><img src="src" alt="alt" /><img src="src2" alt="alt2" /></a>')).toEqual(
-          '[![alt](src)![alt2](src2)](url)'
+            '<a href="url"><img src="src" alt="alt" /><img src="src2" alt="alt2" /></a>')).toEqual(
+            '[![alt](src)![alt2](src2)](url)'
         );
         expect(toMark(
-          '<a href="url"><img src="src" alt="alt" />Text<img src="src2" alt="alt2" /></a>')).toEqual(
-          '[![alt](src)Text![alt2](src2)](url)'
+            '<a href="url"><img src="src" alt="alt" />Text<img src="src2" alt="alt2" /></a>')).toEqual(
+            '[![alt](src)Text![alt2](src2)](url)'
         );
     });
 

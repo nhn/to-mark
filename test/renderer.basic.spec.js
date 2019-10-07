@@ -52,6 +52,22 @@ describe('basicRenderer', function() {
             // until then, we tolerate over escaping the > char
             expect(getMarkdownText('1. &lt;text&gt;')).toEqual('1\\. \\<text\\>');
         });
+
+        it('should escape all markdown paired characters.', function() {
+            expect(getMarkdownText('foo*bar')).toBe('foo\\*bar');
+            expect(getMarkdownText('foo*bar*baz')).toBe('foo\\*bar\\*baz');
+            expect(getMarkdownText('foo**bar**baz')).toBe('foo\\*\\*bar\\*\\*baz');
+
+            expect(getMarkdownText('foo_bar')).toBe('foo\\_bar');
+            expect(getMarkdownText('foo_bar_baz')).toBe('foo\\_bar\\_baz');
+            expect(getMarkdownText('foo__bar__baz')).toBe('foo\\_\\_bar\\_\\_baz');
+
+            expect(getMarkdownText('foo~bar')).toBe('foo\\~bar');
+            expect(getMarkdownText('foo~~bar~~baz')).toBe('foo\\~\\~bar\\~\\~baz');
+
+            expect(getMarkdownText('foo`bar')).toBe('foo\\`bar');
+            expect(getMarkdownText('foo`bar`')).toBe('foo\\`bar\\`');
+        });
     });
 
     describe('inline', function() {
@@ -82,7 +98,7 @@ describe('basicRenderer', function() {
         });
 
         it('link which has characters for markdown link syntax', function() {
-            expect(getMarkdownText('<a href="#head"></a>', 'char []()<> to escape')).toEqual('[char \\[\\]\\(\\)\\<\\> to escape](#head)');
+            expect(getMarkdownText('<a href="#head"></a>', 'char [] to escape')).toEqual('[char \\[\\] to escape](#head)');
         });
 
         it('image', function() {
@@ -98,7 +114,7 @@ describe('basicRenderer', function() {
         });
 
         it('image which has characters for markdown image syntax', function() {
-            expect(getMarkdownText('<img src="#head" alt="char []()<> to escape"></a>')).toEqual('![char \\[\\]\\(\\)\\<\\> to escape](#head)');
+            expect(getMarkdownText('<img src="#head" alt="char [] to escape"></a>')).toEqual('![char \\[\\] to escape](#head)');
         });
 
         it('strong, b', function() {

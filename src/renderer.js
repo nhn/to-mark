@@ -14,7 +14,9 @@ var FIND_LEAD_SPACE_RX = /^\u0020/,
     //find characters that need escape
     FIND_CHAR_TO_ESCAPE_RX = /[~>()*{}\[\]_`+-.!#|]/g,
     // find characters to be escaped in links or images
-    FIND_CHAR_TO_ESCAPE_IN_LINK_RX = /[\[\]\(\)<>]/g;
+    FIND_CHAR_TO_ESCAPE_IN_LINK_RX = /[\[\]]/g,
+    // find markdown image syntax
+    FIND_MARKDOWN_IMAGE_SYNTAX_RX = /!\[.*\]\(.*\)/g;
 
 var TEXT_NODE = 3;
 
@@ -103,6 +105,19 @@ function isInlineNode(node) {
 }
 
 /**
+ * Returns HTML string of an element using given subContent
+ * @param {Node} node Element
+ * @param {string} subContent string content of node
+ * @returns {string}
+ */
+function getRawHtmlString(node, subContent) {
+    var tempNode = node.cloneNode(false);
+    tempNode.innerHTML = subContent;
+
+    return tempNode.outerHTML;
+}
+
+/**
  * getSpaceControlled
  * Remove flanked space of dom node
  * @param {string} content text content
@@ -145,7 +160,7 @@ Renderer.prototype.convert = function(node, subContent) {
 
     if (node && node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('data-tomark-pass')) {
         node.removeAttribute('data-tomark-pass');
-        result = node.outerHTML;
+        result = getRawHtmlString(node, subContent);
     } else if (converter) {
         result = converter.call(this, node, subContent);
     } else if (node) {
@@ -316,8 +331,20 @@ Renderer.prototype.escapeText = function(text) {
  * @returns {string} - processed text
  */
 Renderer.prototype.escapeTextForLink = function(text) {
-    return text.replace(FIND_CHAR_TO_ESCAPE_IN_LINK_RX, function(matched) {
-        return '\\' + matched;
+    var imageSyntaxRanges = [];
+    var result = FIND_MARKDOWN_IMAGE_SYNTAX_RX.exec(text);
+
+    while (result) {
+        imageSyntaxRanges.push([result.index, result.index + result[0].length]);
+        result = FIND_MARKDOWN_IMAGE_SYNTAX_RX.exec(text);
+    }
+
+    return text.replace(FIND_CHAR_TO_ESCAPE_IN_LINK_RX, function(matched, offset) {
+        var isDelimiter = imageSyntaxRanges.some(function(range) {
+            return offset > range[0] && offset < range[1];
+        });
+
+        return isDelimiter ? matched : '\\' + matched;
     });
 };
 
@@ -328,11 +355,9 @@ Renderer.prototype.escapeTextForLink = function(text) {
  * @returns {string} processed text
  */
 Renderer.prototype.escapeTextHtml = function(text) {
-    text = text.replace(Renderer.markdownTextToEscapeHtmlRx, function(matched) {
+    return text.replace(new RegExp(Renderer.markdownTextToEscapeHtmlRx.source, 'g'), function(matched) {
         return '\\' + matched;
     });
-
-    return text;
 };
 
 /**
@@ -344,11 +369,20 @@ Renderer.prototype.escapeTextHtml = function(text) {
  * @returns {string} processed text
  */
 Renderer.prototype.escapeTextBackSlash = function(text) {
-    text = text.replace(Renderer.markdownTextToEscapeBackSlashRx, function(matched) {
+    return text.replace(new RegExp(Renderer.markdownTextToEscapeBackSlashRx.source, 'g'), function(matched) {
         return '\\' + matched;
     });
+};
 
-    return text;
+/**
+ * Escapes in markdown paired characters
+ * @param {string} text Text to escape
+ * @returns {string} escaped text
+ */
+Renderer.prototype.escapePairedCharacters = function(text) {
+    return text.replace(new RegExp(Renderer.markdownTextToEscapePairedCharsRx.source, 'g'), function(matched) {
+        return '\\' + matched;
+    });
 };
 
 Renderer.markdownTextToEscapeRx = {
@@ -362,10 +396,6 @@ Renderer.markdownTextToEscapeRx = {
 
     link: /!?\[.*\]\(.*\)/,
     reflink: /!?\[.*\]\s*\[([^\]]*)\]/,
-    strong: /__(\S|\S[\s\S]*\S)__|\*\*(\S|\S[\s\S]*\S)\*\*/,
-    em: /_(\S|\S[\s\S]*\S)_|\*(\S|\S[\s\S]*\S)\*/,
-    strikeThrough: /~~(\S|\S[\s\S]*\S)~~/,
-    code: /(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,
 
     verticalBar: /\u007C/,
 
@@ -373,9 +403,11 @@ Renderer.markdownTextToEscapeRx = {
     codeblockTildes: /^(~{3,})/
 };
 
-Renderer.markdownTextToEscapeHtmlRx = /<([a-zA-Z_][a-zA-Z0-9\-\._]*)(\s|[^\\/>])*\/?>|<(\/)([a-zA-Z_][a-zA-Z0-9\-\._]*)\s*\/?>|<!--[^-]+-->|<([a-zA-Z_][a-zA-Z0-9\-\.:/]*)>/g;
+Renderer.markdownTextToEscapeHtmlRx = /<([a-zA-Z_][a-zA-Z0-9\-\._]*)(\s|[^\\/>])*\/?>|<(\/)([a-zA-Z_][a-zA-Z0-9\-\._]*)\s*\/?>|<!--[^-]+-->|<([a-zA-Z_][a-zA-Z0-9\-\.:/]*)>/;
 
-Renderer.markdownTextToEscapeBackSlashRx = /\\[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\]/g;
+Renderer.markdownTextToEscapeBackSlashRx = /\\[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\]/;
+
+Renderer.markdownTextToEscapePairedCharsRx = /[*_~`]/;
 
 Renderer.prototype._isNeedEscape = function(text) {
     var res = false;

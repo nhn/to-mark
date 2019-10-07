@@ -284,10 +284,9 @@ describe('renderer', function() {
             expect(renderer._isNeedEscape('awef1. awef')).toEqual(false);
         });
 
-        it('code, codeblock', function() {
+        it('codeblock', function() {
             expect(renderer._isNeedEscape('``` awefwaef')).toEqual(true);
             expect(renderer._isNeedEscape('```` awefwaef')).toEqual(true);
-            expect(renderer._isNeedEscape('`awefwaef`')).toEqual(true);
             expect(renderer._isNeedEscape('```')).toEqual(true);
             expect(renderer._isNeedEscape('~~~')).toEqual(true);
             expect(renderer._isNeedEscape('~~~ awefwaef')).toEqual(true);
@@ -296,27 +295,6 @@ describe('renderer', function() {
             expect(renderer._isNeedEscape('`awefwaef')).toEqual(false);
             expect(renderer._isNeedEscape('awefwaef`')).toEqual(false);
             expect(renderer._isNeedEscape('~awefwaef')).toEqual(false);
-        });
-
-        it('em, strong', function() {
-            expect(renderer._isNeedEscape('*a*')).toEqual(true);
-            expect(renderer._isNeedEscape('_a_')).toEqual(true);
-            expect(renderer._isNeedEscape('*em*')).toEqual(true);
-            expect(renderer._isNeedEscape('_em_')).toEqual(true);
-            expect(renderer._isNeedEscape('**strong**')).toEqual(true);
-            expect(renderer._isNeedEscape('__strong__')).toEqual(true);
-
-            expect(renderer._isNeedEscape('_ em_')).toEqual(false);
-        });
-
-        it('strikeThrough', function() {
-            expect(renderer._isNeedEscape('~~a~~')).toEqual(true);
-            expect(renderer._isNeedEscape('~~true~~')).toEqual(true);
-            expect(renderer._isNeedEscape('~~strike through~~')).toEqual(true);
-
-            expect(renderer._isNeedEscape('~~strike~')).toEqual(false);
-            expect(renderer._isNeedEscape('~~strike~through~')).toEqual(false);
-            expect(renderer._isNeedEscape('~strike~')).toEqual(false);
         });
 
         it('link,img', function() {
@@ -331,7 +309,7 @@ describe('renderer', function() {
         });
     });
 
-    it('_isNeedEscapeHtml() can check passed text is needed escape or not', function() {
+    describe('_isNeedEscapeHtml() can check passed text is needed escape or not', function() {
         var renderer;
 
         beforeEach(function() {
